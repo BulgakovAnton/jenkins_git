@@ -2,13 +2,20 @@
 
 properties([disableConcurrentBuilds()])
 
-pipeline {
+pipeline{
     agent{
         label 'master'
-        }
+    }
+    triggers { pollSCM('* * * * *') }
     options {
-        buildDiscarder(logRotaator(numToKeepStr: '10', artifactNumToKeepStr : '10' ))
-        timestamp()
+        buildDiscarded(logRotator(numToKeepStr: '10', artifactNumToKeepStr '10')
+        timestamps()
+    }
+    stages{
+        stage("compose up"){
+            steps{
+                sh 'docker-compose up -d --build .'
+            }
         }
     }
-    
+}
